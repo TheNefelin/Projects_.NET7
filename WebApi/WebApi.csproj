@@ -15,4 +15,8 @@
     <ProjectReference Include="..\ProjectGamesGuide\ProjectGamesGuide.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

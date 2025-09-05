@@ -10,6 +10,7 @@ namespace WebApi.Controllers;
 [ApiController]
 public class GameGuidesController : ControllerBase
 {
+    private readonly IWebHostEnvironment _webHostEnvironment;
     private readonly IGameGuideService _gameGuide;
     private readonly IAuthGoogleService _authGoogleService;
     private readonly IServiceByUser<GuideUser> _guideUser;
@@ -23,6 +24,7 @@ public class GameGuidesController : ControllerBase
     private readonly IServiceBase<Source> _source;
 
     public GameGuidesController(
+        IWebHostEnvironment webHostEnvironment,
         IGameGuideService gameGuide,
         IAuthGoogleService authGoogleService,
         IServiceByUser<GuideUser> guideUser,
@@ -36,6 +38,7 @@ public class GameGuidesController : ControllerBase
         IServiceBase<Source> source
         )
     {
+        _webHostEnvironment = webHostEnvironment;
         _gameGuide = gameGuide;
         _authGoogleService = authGoogleService;
         _guideUser = guideUser;
@@ -47,6 +50,21 @@ public class GameGuidesController : ControllerBase
         _game = game;
         _guide = guide;
         _source = source;
+    }
+
+    [HttpGet("img")]
+    public IActionResult GetImg(string fileName)
+    {
+        var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "GamesGuide", fileName);
+
+        if (System.IO.File.Exists(filePath))
+        {
+            byte[] b = System.IO.File.ReadAllBytes(filePath);
+
+            return File(b, "image/webp");
+        }
+
+        return BadRequest(new { Msge = "El Archivo No Existe" });
     }
 
     [HttpGet("{id_user}")]
