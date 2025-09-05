@@ -12,29 +12,33 @@ builder.Services.AddTransient<IDapperContext>(provider =>
     return new DapperContext(builder.Configuration.GetConnectionString("SqlServerWeb")!);
 });
 
-builder.Services.AddTransient<IRepositoryByUser<AdventureUser>, AdventureUserRepository>();
+// ======================================================================
+// Game Guides Repository and Services
+// ======================================================================
+builder.Services.AddTransient<IAuthGoogleRepository, AuthGoogleRepository>();
 builder.Services.AddTransient<IRepositoryByUser<GuideUser>, GuideUserRepository>();
-
-builder.Services.AddTransient<IRepositoryBase<AdventureImg>, AdventureImgRepository>();
-builder.Services.AddTransient<IRepositoryBase<Adventure>, AdventureRepository>();
-builder.Services.AddTransient<IRepositoryBase<BackgroundImg>, BackgroundImgRepository>();
-builder.Services.AddTransient<IRepositoryBase<Character>, CharacterRepository>();
+builder.Services.AddTransient<IRepositoryByUser<AdventureUser>, AdventureUserRepository>();
 builder.Services.AddTransient<IRepositoryBase<Game>, GameRepository>();
-builder.Services.AddTransient<IRepositoryBase<Guide>, GuideRepository>();
+builder.Services.AddTransient<IRepositoryBase<Character>, CharacterRepository>();
 builder.Services.AddTransient<IRepositoryBase<Source>, SourceRepository>();
-
-builder.Services.AddTransient<IServiceByUser<AdventureUser>, AdventureUserService>();
-builder.Services.AddTransient<IServiceByUser<GuideUser>, GuideUserService>();
-
-builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>();
-builder.Services.AddTransient<IServiceBase<Adventure>, AdventureService>();
-builder.Services.AddTransient<IServiceBase<BackgroundImg>, BackgroundImgService>();
-builder.Services.AddTransient<IServiceBase<Character>, CharacterService>();
-builder.Services.AddTransient<IServiceBase<Game>,  GameService>();
-builder.Services.AddTransient<IServiceBase<Guide>, GuideService>();
-builder.Services.AddTransient<IServiceBase<Source>, SourceService>();
+builder.Services.AddTransient<IRepositoryBase<BackgroundImg>, BackgroundImgRepository>();
+builder.Services.AddTransient<IRepositoryBase<Guide>, GuideRepository>();
+builder.Services.AddTransient<IRepositoryBase<Adventure>, AdventureRepository>();
+builder.Services.AddTransient<IRepositoryBase<AdventureImg>, AdventureImgRepository>();
 
 builder.Services.AddTransient<IGameGuideService, GameGuideService>();
+builder.Services.AddTransient<IAuthGoogleService, AuthGoogleService>();
+builder.Services.AddTransient<IServiceByUser<GuideUser>, GuideUserService>();
+builder.Services.AddTransient<IServiceByUser<AdventureUser>, AdventureUserService>();
+builder.Services.AddTransient<IServiceBase<Game>, GameService>();
+builder.Services.AddTransient<IServiceBase<Character>, CharacterService>();
+builder.Services.AddTransient<IServiceBase<Source>, SourceService>();
+builder.Services.AddTransient<IServiceBase<BackgroundImg>, BackgroundImgService>();
+builder.Services.AddTransient<IServiceBase<Guide>, GuideService>();
+builder.Services.AddTransient<IServiceBase<Adventure>, AdventureService>();
+builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>();
+
+// ======================================================================
 
 builder.Services.AddCors(options =>
 {

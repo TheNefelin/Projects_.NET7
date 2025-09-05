@@ -16,13 +16,25 @@ public class AdventureService : IServiceBase<Adventure>
 
     public async Task<ApiResponse<IEnumerable<Adventure>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var data = await _repository.GetAllAsync(cancellationToken);
-        return new ApiResponse<IEnumerable<Adventure>>
+        try
         {
-            IsSuccess = true,
-            StatusCode = 200,
-            Message = "Ok",
-            Data = data
-        };
+            var data = await _repository.GetAllAsync(cancellationToken);
+            return new ApiResponse<IEnumerable<Adventure>>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<IEnumerable<Adventure>>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
     }
 }

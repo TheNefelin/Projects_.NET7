@@ -16,13 +16,48 @@ public class AdventureUserService : IServiceByUser<AdventureUser>
 
     public async Task<ApiResponse<IEnumerable<AdventureUser>>> GetAllByUserIdAsync(Guid Id_User, CancellationToken cancellationToken)
     {
-        var data = await _repository.GetAllByUserIdAsync(Id_User, cancellationToken);
-        return new ApiResponse<IEnumerable<AdventureUser>>
+        try
         {
-            IsSuccess = true,
-            StatusCode = 200,
-            Message = "Ok",
-            Data = data
-        };
+            var data = await _repository.GetAllByUserIdAsync(Id_User, cancellationToken);
+            return new ApiResponse<IEnumerable<AdventureUser>>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<IEnumerable<AdventureUser>>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
+    }
+
+    public async Task<ApiResponse<object>> UpdateAsync(AdventureUser userData, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var data = await _repository.UpdateAsync(userData, cancellationToken);
+            return new ApiResponse<object>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok"
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<object>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
     }
 }

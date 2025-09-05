@@ -16,13 +16,25 @@ public class SourceService : IServiceBase<Source>
 
     public async Task<ApiResponse<IEnumerable<Source>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var data = await _repository.GetAllAsync(cancellationToken);
-        return new ApiResponse<IEnumerable<Source>>
+        try
         {
-            IsSuccess = true,
-            StatusCode = 200,
-            Message = "Ok",
-            Data = data
-        };
+            var data = await _repository.GetAllAsync(cancellationToken);
+            return new ApiResponse<IEnumerable<Source>>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<IEnumerable<Source>>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
     }
 }

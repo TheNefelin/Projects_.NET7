@@ -2,6 +2,7 @@
 using Dapper;
 using ProjectGamesGuide.Domain.Entities;
 using ProjectGamesGuide.Domain.Interfaces;
+using System.Data;
 
 namespace ProjectGamesGuide.Infrastructure.Repositories;
 
@@ -24,5 +25,18 @@ public class GuideUserRepository : IRepositoryByUser<GuideUser>
 
         using var connection = _dapper.CreateConnection();
         return await connection.QueryAsync<GuideUser>(commandDefinition);
+    }
+
+    public async Task<object> UpdateAsync(GuideUser userData, CancellationToken cancellationToken)
+    {
+        var commandDefinition = new CommandDefinition(
+            commandType: CommandType.StoredProcedure,
+            commandText: "GG_GuidesUser_Set",
+            parameters: new { userData.Id_Guide, userData.Id_User, userData.IsCheck },
+            cancellationToken: cancellationToken
+        );
+
+        using var connection = _dapper.CreateConnection();
+        return await connection.QueryAsync<object>(commandDefinition);
     }
 }

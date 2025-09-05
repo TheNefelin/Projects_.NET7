@@ -3,15 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 using ProjectGamesGuide.Application.DTOs;
 using ProjectGamesGuide.Application.Interfaces;
 using ProjectGamesGuide.Domain.Entities;
-using System;
 
 namespace WebApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/game-guide")]
 [ApiController]
 public class GameGuidesController : ControllerBase
-{   
-    private readonly IGameGuideService _service;
+{
+    private readonly IGameGuideService _gameGuide;
+    private readonly IAuthGoogleService _authGoogleService;
+    private readonly IServiceByUser<GuideUser> _guideUser;
+    private readonly IServiceByUser<AdventureUser> _adventureUser;
     private readonly IServiceBase<Adventure> _adventure;
     private readonly IServiceBase<AdventureImg> _adventureimg;
     private readonly IServiceBase<BackgroundImg> _backgroundimg;
@@ -21,7 +23,10 @@ public class GameGuidesController : ControllerBase
     private readonly IServiceBase<Source> _source;
 
     public GameGuidesController(
-        IGameGuideService service,
+        IGameGuideService gameGuide,
+        IAuthGoogleService authGoogleService,
+        IServiceByUser<GuideUser> guideUser,
+        IServiceByUser<AdventureUser> adventureUser,
         IServiceBase<Adventure> adventure,
         IServiceBase<AdventureImg> adventureimg,
         IServiceBase<BackgroundImg> backgroundimg,
@@ -31,7 +36,10 @@ public class GameGuidesController : ControllerBase
         IServiceBase<Source> source
         )
     {
-        _service = service;
+        _gameGuide = gameGuide;
+        _authGoogleService = authGoogleService;
+        _guideUser = guideUser;
+        _adventureUser = adventureUser;
         _adventure = adventure;
         _adventureimg = adventureimg;
         _backgroundimg = backgroundimg;
@@ -41,39 +49,46 @@ public class GameGuidesController : ControllerBase
         _source = source;
     }
 
-    [HttpGet("{Id_User}")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<GameResponse>>>> GetAllGameGuides(Guid Id_User, CancellationToken cancelationToken)
+    [HttpGet("{id_user}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<GameResponse>>>> GetAllGameGuides(Guid id_user, CancellationToken cancelationToken)
     {
         //Id_User = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-        var apiResult = await _service.GetAllAsync(Id_User, cancelationToken);
+        var apiResult = await _gameGuide.GetAllAsync(id_user, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("adventure")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<Adventure>>>> GetAllAdventure(CancellationToken cancelationToken)
+    [HttpPost("auth-google")]
+    public async Task<ActionResult<ApiResponse<LoggedToken>>> GoogleLoginAsync(LoginGoogle login, CancellationToken cancellationToken)
     {
-        var apiResult = await _adventure.GetAllAsync(cancelationToken);
+        var result = await _authGoogleService.LoginGoogleAsync(login, cancellationToken);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    [HttpPost("guide-user")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateGuideUserByUserId(GuideUser guideUser, CancellationToken cancelationToken)
+    {
+        var apiResult = await _guideUser.UpdateAsync(guideUser, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("adventureimg")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<AdventureImg>>>> GetAllAdventureImg(CancellationToken cancelationToken)
+    [HttpPost("adventure-user")]
+    public async Task<ActionResult<ApiResponse<object>>> UpdateAdventureUserlByUserId(AdventureUser adventureUser, CancellationToken cancelationToken)
     {
-        var apiResult = await _adventureimg.GetAllAsync(cancelationToken);
+        var apiResult = await _adventureUser.UpdateAsync(adventureUser, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("backgroundimg")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<BackgroundImg>>>> GetAllBackgroundImg(CancellationToken cancelationToken)
+    [HttpGet("guide-user/{id_user}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<GuideUser>>>> GetAllGuideUserByUserId(Guid id_user, CancellationToken cancelationToken)
     {
-        var apiResult = await _backgroundimg.GetAllAsync(cancelationToken);
+        var apiResult = await _guideUser.GetAllByUserIdAsync(id_user, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("character")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<Character>>>> GetAllCharacter(CancellationToken cancelationToken)
+    [HttpGet("adventure-user/{id_user}")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<AdventureUser>>>> GetAlAdventureUserlByUserId(Guid id_user, CancellationToken cancelationToken)
     {
-        var apiResult = await _character.GetAllAsync(cancelationToken);
+        var apiResult = await _adventureUser.GetAllByUserIdAsync(id_user, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
@@ -84,10 +99,10 @@ public class GameGuidesController : ControllerBase
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("guide")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<Guide>>>> GetAllGuide(CancellationToken cancelationToken)
+    [HttpGet("character")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<Character>>>> GetAllCharacter(CancellationToken cancelationToken)
     {
-        var apiResult = await _guide.GetAllAsync(cancelationToken);
+        var apiResult = await _character.GetAllAsync(cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
@@ -95,6 +110,35 @@ public class GameGuidesController : ControllerBase
     public async Task<ActionResult<ApiResponse<IEnumerable<Source>>>> GetAllSource(CancellationToken cancelationToken)
     {
         var apiResult = await _source.GetAllAsync(cancelationToken);
+        return StatusCode(apiResult.StatusCode, apiResult);
+    }
+
+    [HttpGet("background-img")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<BackgroundImg>>>> GetAllBackgroundImg(CancellationToken cancelationToken)
+    {
+        var apiResult = await _backgroundimg.GetAllAsync(cancelationToken);
+        return StatusCode(apiResult.StatusCode, apiResult);
+    }
+
+    [HttpGet("guide")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<Guide>>>> GetAllGuide(CancellationToken cancelationToken)
+    {
+        var apiResult = await _guide.GetAllAsync(cancelationToken);
+        return StatusCode(apiResult.StatusCode, apiResult);
+    }
+
+
+    [HttpGet("adventure")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<Adventure>>>> GetAllAdventure(CancellationToken cancelationToken)
+    {
+        var apiResult = await _adventure.GetAllAsync(cancelationToken);
+        return StatusCode(apiResult.StatusCode, apiResult);
+    }
+
+    [HttpGet("adventure-img")]
+    public async Task<ActionResult<ApiResponse<IEnumerable<AdventureImg>>>> GetAllAdventureImg(CancellationToken cancelationToken)
+    {
+        var apiResult = await _adventureimg.GetAllAsync(cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 }

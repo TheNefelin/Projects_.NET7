@@ -16,13 +16,25 @@ public class BackgroundImgService : IServiceBase<BackgroundImg>
 
     public async Task<ApiResponse<IEnumerable<BackgroundImg>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var data = await _repository.GetAllAsync(cancellationToken);
-        return new ApiResponse<IEnumerable<BackgroundImg>>
+        try
         {
-            IsSuccess = true,
-            StatusCode = 200,
-            Message = "Ok",
-            Data = data
-        };
+            var data = await _repository.GetAllAsync(cancellationToken);
+            return new ApiResponse<IEnumerable<BackgroundImg>>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<IEnumerable<BackgroundImg>>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
     }
 }

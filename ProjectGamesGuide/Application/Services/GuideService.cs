@@ -16,13 +16,25 @@ public class GuideService : IServiceBase<Guide>
 
     public async Task<ApiResponse<IEnumerable<Guide>>> GetAllAsync(CancellationToken cancellationToken)
     {
-        var data = await _repository.GetAllAsync(cancellationToken);
-        return new ApiResponse<IEnumerable<Guide>>
+        try
         {
-            IsSuccess = true,
-            StatusCode = 200,
-            Message = "Ok",
-            Data = data
-        };
+            var data = await _repository.GetAllAsync(cancellationToken);
+            return new ApiResponse<IEnumerable<Guide>>
+            {
+                IsSuccess = true,
+                StatusCode = 200,
+                Message = "Ok",
+                Data = data
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ApiResponse<IEnumerable<Guide>>
+            {
+                IsSuccess = false,
+                StatusCode = 500,
+                Message = ex.Message,
+            };
+        }
     }
 }
