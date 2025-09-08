@@ -1,11 +1,11 @@
 ﻿using Core.Data;
 using Dapper;
-using System.Data;
-using System.Threading;
+using ProjectPasswordManager.Domain.Entities;
+using ProjectPasswordManager.Domain.Interfaces;
 
 namespace ProjectPasswordManager.Infrastructure.Repositories;
 
-public class CoreRepository
+public class CoreRepository : ICoreRepository
 {
     private readonly IDapperContext _dapper;
 
@@ -13,15 +13,75 @@ public class CoreRepository
     {
         _dapper = dapper;
     }
-    public async Task<AuthUser?> GetUser(string IdUser, string SqlToken, CancellationToken cancellationToken)
+
+    public async Task<IEnumerable<CoreData>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
-            commandText: "SELECT a.Id AS IdUser, a.Email, a.HashLogin, a.SaltLogin, a.HashPM, a.SaltPM, a.SqlToken, b.Name AS Role FROM Auth_Users a INNER JOIN Auth_Profiles b ON a.IdProfile = b.Id WHERE a.Id = @IdUser AND a.SqlToken = @SqlToken",
-            parameters: new { IdUser, SqlToken },
-            cancellationToken: cancellationToken
+            cancellationToken: cancellationToken,
+            commandText: "SELECT Id, Data01, Data02, Data03, IdUser FROM PM_Core WHERE IdUser = @IdUser",
+            parameters: new { 
+                IdUser = idUser
+            }
         );
 
         using var connection = _dapper.CreateConnection();
-        return await connection.QueryFirstOrDefaultAsync<AuthUser>(commandDefinition);
+        return await connection.QueryAsync<CoreData>(commandDefinition);
+    }
+
+    public async Task<CoreData> InsertAsync(CoreData coreData, CancellationToken cancellationToken)
+    {
+        var commandDefinition = new CommandDefinition(
+            cancellationToken: cancellationToken,
+            commandText: "INSERT INTO PM_Core (Data01, Data02, Data03, IdUser) OUTPUT inserted.Id VALUES (@Data01, @Data02, @Data03, @IdUser)",
+            parameters: new { 
+                coreData.Data01, 
+                coreData.Data02, 
+                coreData.Data03, 
+                coreData.IdUser
+            }
+        );
+
+        using var connection = _dapper.CreateConnection();
+        var id = await connection.QueryAsync<int>(commandDefinition);
+
+        coreData.Id = id.First();
+        return coreData;
+    }
+
+    public async Task<CoreData> UpdateAsync(CoreData coreData, CancellationToken cancellationToken)
+    {
+        var commandDefinition = new CommandDefinition(
+            cancellationToken: cancellationToken,
+            commandText: "UPDATE PM_Core SET Data01 = @Data01, Data02 = @Data02, Data03 = @Data03 WHERE Id = @Id AND IdUser = @IdUser",
+            parameters: new
+            {
+                coreData.Id,
+                coreData.Data01,
+                coreData.Data02,
+                coreData.Data03,
+                coreData.IdUser
+            }
+        );
+
+        using var connection = _dapper.CreateConnection();
+        await connection.QueryAsync(commandDefinition);
+
+        return coreData;
+    }
+
+    public async Task DeleteAsync(int id, Guid idUser, CancellationToken cancellationToken)
+    {
+        var commandDefinition = new CommandDefinition(
+            cancellationToken: cancellationToken,
+            commandText: "DELETE FROM PM_Core WHERE Id = @Id AND IdUser = @IdUser",
+            parameters: new
+            {
+                Id = id,
+                IdUser = idUser
+            }
+        );
+
+        using var connection = _dapper.CreateConnection();
+        await connection.QueryAsync(commandDefinition);
     }
 }

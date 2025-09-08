@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ProjectGamesGuide\ProjectGamesGuide.csproj" />
+    <ProjectReference Include="..\ProjectPasswordManager\ProjectPasswordManager.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -4,6 +4,10 @@ using ProjectGamesGuide.Application.Services;
 using ProjectGamesGuide.Domain.Entities;
 using ProjectGamesGuide.Domain.Interfaces;
 using ProjectGamesGuide.Infrastructure.Repositories;
+using ProjectPasswordManager.Application.Interfaces;
+using ProjectPasswordManager.Application.Services;
+using ProjectPasswordManager.Domain.Interfaces;
+using ProjectPasswordManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,12 @@ builder.Services.AddTransient<IDapperContext>(provider =>
 {
     return new DapperContext(builder.Configuration.GetConnectionString("SqlServerWeb")!);
 });
+
+// ======================================================================
+// Core Repository and Services
+// ======================================================================
+builder.Services.AddTransient<ICoreRepository, CoreRepository>();   
+builder.Services.AddTransient<ICoreService, CoreService>();
 
 // ======================================================================
 // Game Guides Repository and Services
