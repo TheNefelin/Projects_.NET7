@@ -8,6 +8,7 @@ using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Application.Services;
 using ProjectPasswordManager.Domain.Interfaces;
 using ProjectPasswordManager.Infrastructure.Repositories;
+using ProjectPasswordManager.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,11 @@ builder.Services.AddTransient<IDapperContext>(provider =>
 // ======================================================================
 // Core Repository and Services
 // ======================================================================
-builder.Services.AddTransient<ICoreRepository, CoreRepository>();   
+builder.Services.AddTransient<ICoreRepository, CoreRepository>();
+builder.Services.AddTransient<ICoreUserRepository, CoreUserRepository>();
 builder.Services.AddTransient<ICoreService, CoreService>();
+builder.Services.AddTransient<ICoreUserService, CoreUserService>();
+builder.Services.AddSingleton<PasswordUtil>();
 
 // ======================================================================
 // Game Guides Repository and Services

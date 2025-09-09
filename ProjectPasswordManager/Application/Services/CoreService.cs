@@ -86,11 +86,11 @@ public class CoreService : ICoreService
         }
     }
 
-    public async Task<ApiResponse<object>> DeleteAsync(int id, Guid idUser, CancellationToken cancellationToken)
+    public async Task<ApiResponse<object>> DeleteAsync(CoreDataDelete coreDataDelete, CancellationToken cancellationToken)
     {
         try
         {
-            await _repository.DeleteAsync(id, idUser, cancellationToken);
+            await _repository.DeleteAsync(coreDataDelete, cancellationToken);
             return new ApiResponse<object>
             {
                 IsSuccess = true,

@@ -42,7 +42,7 @@ CREATE TABLE Auth_Users (
 	SaltLogin VARCHAR(256) NOT NULL,
 	HashPM VARCHAR(256),
 	SaltPM VARCHAR(256),
-	SqlToken VARCHAR(256) ,
+	SqlToken UNIQUEIDENTIFIER,
 	IdProfile INT NOT NULL
 	UNIQUE(Email),
 	FOREIGN KEY (IdProfile) REFERENCES Auth_Profiles(Id)

@@ -1,10 +1,11 @@
 ﻿using Core.Data;
 using Dapper;
 using ProjectPasswordManager.Domain.Entities;
+using ProjectPasswordManager.Domain.Interfaces;
 
 namespace ProjectPasswordManager.Infrastructure.Repositories;
 
-public class CoreUserRepository
+public class CoreUserRepository : ICoreUserRepository
 {
     private readonly IDapperContext _dapper;
 

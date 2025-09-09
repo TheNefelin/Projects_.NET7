@@ -2,5 +2,5 @@
 
 public class CoreUserIV
 {
-   public string? SaltPM { get; set; }
+   public required string IV { get; set; }
 }

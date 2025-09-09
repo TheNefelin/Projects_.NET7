@@ -1,5 +1,6 @@
 ﻿using Core.Data;
 using Dapper;
+using ProjectPasswordManager.Application.DTOs;
 using ProjectPasswordManager.Domain.Entities;
 using ProjectPasswordManager.Domain.Interfaces;
 
@@ -69,15 +70,15 @@ public class CoreRepository : ICoreRepository
         return coreData;
     }
 
-    public async Task DeleteAsync(int id, Guid idUser, CancellationToken cancellationToken)
+    public async Task DeleteAsync(CoreDataDelete coreDataDelete, CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
             commandText: "DELETE FROM PM_Core WHERE Id = @Id AND IdUser = @IdUser",
             parameters: new
             {
-                Id = id,
-                IdUser = idUser
+                Id = coreDataDelete.IdData,
+                coreDataDelete.IdUser
             }
         );
 
