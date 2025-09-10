@@ -18,7 +18,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_Core WHERE User_Id = @User_Id",
+            commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_CoreData WHERE User_Id = @User_Id",
             parameters: new {
                 coreData.User_Id
             }
@@ -32,7 +32,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "INSERT INTO PM_Core (Data01, Data02, Data03, User_Id) OUTPUT inserted.Id VALUES (@Data01, @Data02, @Data03, @User_Id)",
+            commandText: "INSERT INTO PM_CoreData (Data01, Data02, Data03, User_Id) OUTPUT inserted.Data_Id VALUES (@Data01, @Data02, @Data03, @User_Id)",
             parameters: new { 
                 coreData.Data01, 
                 coreData.Data02, 
@@ -42,9 +42,9 @@ public class CoreDataRepository : ICoreDataRepository
         );
 
         using var connection = _dapper.CreateConnection();
-        var id = await connection.QueryAsync<int>(commandDefinition);
+        var dataId = await connection.QueryAsync<int>(commandDefinition);
 
-        coreData.Data_Id = id.First();
+        coreData.Data_Id = dataId.First();
         return coreData;
     }
 
@@ -52,7 +52,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "UPDATE PM_Core SET Data01 = @Data01, Data02 = @Data02, Data03 = @Data03 WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
+            commandText: "UPDATE PM_CoreData SET Data01 = @Data01, Data02 = @Data02, Data03 = @Data03 WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
             parameters: new
             {
                 coreData.Data_Id,
@@ -73,7 +73,7 @@ public class CoreDataRepository : ICoreDataRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "DELETE FROM PM_Core WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
+            commandText: "DELETE FROM PM_CoreData WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
             parameters: new
             {
                 coreData.Data_Id,

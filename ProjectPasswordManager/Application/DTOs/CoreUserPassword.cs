@@ -1,6 +1,6 @@
 ﻿namespace ProjectPasswordManager.Application.DTOs;
 
-public class CoreDataPassword
+public class CoreUserPassword
 {
     public required string Password { get; set; }
     public required CoreUserRequest CoreUser { get; set; }

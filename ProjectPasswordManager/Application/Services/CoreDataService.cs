@@ -8,12 +8,12 @@ namespace ProjectPasswordManager.Application.Services;
 
 public class CoreDataService : ICoreDataService
 {
-    private readonly ICoreDataRepository _repository;
+    private readonly ICoreDataRepository _coreDataRepository;
     private readonly ICoreUserRepository _coreUserRepository;
 
-    public CoreDataService(ICoreDataRepository repository, ICoreUserRepository coreUserRepository)
+    public CoreDataService(ICoreDataRepository coreDataRepository, ICoreUserRepository coreUserRepository)
     {
-        _repository = repository;
+        _coreDataRepository = coreDataRepository;
         _coreUserRepository = coreUserRepository;
     }
 
@@ -21,13 +21,11 @@ public class CoreDataService : ICoreDataService
     {
         try
         {
-            var user = new CoreUser
-            {
-                User_Id = coreUserRequest.User_Id,
-                SqlToken = coreUserRequest.SqlToken
-            };
-
-            var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser { 
+                    User_Id = coreUserRequest.User_Id,
+                    SqlToken = coreUserRequest.SqlToken
+                }, cancellationToken);
 
             if (coreUser == null)
                 return new ApiResponse<IEnumerable<CoreData>>
@@ -37,13 +35,18 @@ public class CoreDataService : ICoreDataService
                     Message = "Debes Iniciar Sesion."
                 };
 
-            var data = await _repository.GetAllAsync(user, cancellationToken);
+            var coreDatas = await _coreDataRepository.GetAllAsync(
+                new CoreData 
+                { 
+                    User_Id = coreUser.User_Id
+                }, cancellationToken);
+            
             return new ApiResponse<IEnumerable<CoreData>>
             {
                 IsSuccess = true,
                 StatusCode = 200,
                 Message = "Ok",
-                Data = data
+                Data = coreDatas
             };
         }
         catch (Exception ex)
@@ -57,17 +60,40 @@ public class CoreDataService : ICoreDataService
         }
     }
 
-    public async Task<ApiResponse<CoreData>> InsertAsync(CoreData coreData, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreData>> InsertAsync(CoreDataRequest coreDataRequest, CancellationToken cancellationToken)
     {
         try
         {
-            var data = await _repository.InsertAsync(coreData, cancellationToken);
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser
+                {
+                    User_Id = coreDataRequest.CoreUser.User_Id,
+                    SqlToken = coreDataRequest.CoreUser.SqlToken
+                }, cancellationToken);
+
+            if (coreUser == null)
+                return new ApiResponse<CoreData>
+                {
+                    IsSuccess = false,
+                    StatusCode = 401,
+                    Message = "Debes Iniciar Sesion."
+                };
+
+            var coreData = await _coreDataRepository.InsertAsync(
+                new CoreData 
+                { 
+                    Data01 = coreDataRequest.Data01,
+                    Data02 = coreDataRequest.Data02,
+                    Data03 = coreDataRequest.Data03,
+                    User_Id = coreUser.User_Id
+                }, cancellationToken);
+
             return new ApiResponse<CoreData>
             {
                 IsSuccess = true,
                 StatusCode = 201,
                 Message = "Created",
-                Data = data
+                Data = coreData
             };
         }
         catch (Exception ex)
@@ -81,17 +107,40 @@ public class CoreDataService : ICoreDataService
         }
     }
 
-    public async Task<ApiResponse<CoreData>> UpdateAsync(CoreData coreData, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreData>> UpdateAsync(CoreDataRequest coreDataRequest, CancellationToken cancellationToken)
     {
         try
         {
-            var data = await _repository.UpdateAsync(coreData, cancellationToken);
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser
+                {
+                    User_Id = coreDataRequest.CoreUser.User_Id,
+                    SqlToken = coreDataRequest.CoreUser.SqlToken
+                }, cancellationToken);
+
+            if (coreUser == null)
+                return new ApiResponse<CoreData>
+                {
+                    IsSuccess = false,
+                    StatusCode = 401,
+                    Message = "Debes Iniciar Sesion."
+                };
+
+            var coreData = await _coreDataRepository.UpdateAsync(
+                new CoreData
+                { 
+                    Data_Id = coreDataRequest.Data_Id,
+                    Data01 = coreDataRequest.Data01,
+                    Data02 = coreDataRequest.Data02,
+                    Data03 = coreDataRequest.Data03,
+                    User_Id = coreDataRequest.CoreUser.User_Id
+                }, cancellationToken);
             return new ApiResponse<CoreData>
             {
                 IsSuccess = true,
                 StatusCode = 200,
                 Message = "Ok",
-                Data = data
+                Data = coreData
             };
         }
         catch (Exception ex)
@@ -109,13 +158,28 @@ public class CoreDataService : ICoreDataService
     {
         try
         {
-            var coreData = new CoreData
-            {
-                Data_Id = coreDataDelete.Data_Id,
-                User_Id = coreDataDelete.CoreUser.User_Id,
-            };
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser
+                {
+                    User_Id = coreDataDelete.CoreUser.User_Id,
+                    SqlToken = coreDataDelete.CoreUser.SqlToken
+                }, cancellationToken);
 
-            await _repository.DeleteAsync(coreData, cancellationToken);
+            if (coreUser == null)
+                return new ApiResponse<object>
+                {
+                    IsSuccess = false,
+                    StatusCode = 401,
+                    Message = "Debes Iniciar Sesion."
+                };
+
+            await _coreDataRepository.DeleteAsync(
+                new CoreData
+                {
+                    Data_Id = coreDataDelete.Data_Id,
+                    User_Id = coreDataDelete.CoreUser.User_Id,
+                }, cancellationToken);
+
             return new ApiResponse<object>
             {
                 IsSuccess = true,

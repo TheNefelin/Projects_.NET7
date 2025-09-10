@@ -18,17 +18,16 @@ public class CoreUserService : ICoreUserService
         _passwordUtil = passwordUtil;
     }
 
-    public async Task<ApiResponse<CoreUserIV>> RegisterCoreUserPasswordAsync(CoreDataPassword coreUserRequest, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreUserIV>> RegisterCoreUserPasswordAsync(CoreUserPassword coreUserPassword, CancellationToken cancellationToken)
     {
         try
         {
-            var user = new CoreUser
-            {
-                User_Id = coreUserRequest.CoreUser.IdUser,
-                SqlToken = coreUserRequest.CoreUser.SqlToken
-            };
-
-            var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser
+                {
+                    User_Id = coreUserPassword.CoreUser.User_Id,
+                    SqlToken = coreUserPassword.CoreUser.SqlToken
+                }, cancellationToken);
 
             if (coreUser == null)
                 return new ApiResponse<CoreUserIV>
@@ -46,7 +45,7 @@ public class CoreUserService : ICoreUserService
                     Message = "Ya Tienes una Clave Creada."
                 };
 
-            var (hash, salt) = _passwordUtil.HashPassword(coreUserRequest.Password);
+            var (hash, salt) = _passwordUtil.HashPassword(coreUserPassword.Password);
             coreUser.HashPM = hash;
             coreUser.SaltPM = salt;
 
@@ -76,17 +75,16 @@ public class CoreUserService : ICoreUserService
         }
     }
 
-    public async Task<ApiResponse<CoreUserIV>> GetCoreUserIVAsync(CoreDataPassword coreUserRequest, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreUserIV>> GetCoreUserIVAsync(CoreUserPassword coreUserPassword, CancellationToken cancellationToken)
     {
         try
         {
-            var user = new CoreUser
-            {
-                IdUser = coreUserRequest.CoreUser.IdUser,
-                SqlToken = coreUserRequest.CoreUser.SqlToken
-            };
-
-            var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(
+                new CoreUser
+                {
+                    User_Id = coreUserPassword.CoreUser.User_Id,
+                    SqlToken = coreUserPassword.CoreUser.SqlToken
+                }, cancellationToken);
 
             if (coreUser == null)
                 return new ApiResponse<CoreUserIV>
@@ -104,7 +102,7 @@ public class CoreUserService : ICoreUserService
                     Message = "Debes Crear una Clave."
                 };
 
-            bool isPasswordOk = _passwordUtil.VerifyPassword(coreUserRequest.Password, coreUser.HashPM, coreUser.SaltPM);
+            bool isPasswordOk = _passwordUtil.VerifyPassword(coreUserPassword.Password, coreUser.HashPM, coreUser.SaltPM);
 
             if (!isPasswordOk)
                 return new ApiResponse<CoreUserIV>
