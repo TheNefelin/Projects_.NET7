@@ -1,24 +1,43 @@
 ﻿using Core;
+using ProjectPasswordManager.Application.DTOs;
 using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Domain.Entities;
 using ProjectPasswordManager.Domain.Interfaces;
 
 namespace ProjectPasswordManager.Application.Services;
 
-public class CoreService : ICoreService
+public class CoreDataService : ICoreDataService
 {
-    private readonly ICoreRepository _repository;
+    private readonly ICoreDataRepository _repository;
+    private readonly ICoreUserRepository _coreUserRepository;
 
-    public CoreService(ICoreRepository repository)
+    public CoreDataService(ICoreDataRepository repository, ICoreUserRepository coreUserRepository)
     {
         _repository = repository;
+        _coreUserRepository = coreUserRepository;
     }
 
-    public async Task<ApiResponse<IEnumerable<CoreData>>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
+    public async Task<ApiResponse<IEnumerable<CoreData>>> GetAllAsync(CoreUserRequest coreUserRequest, CancellationToken cancellationToken)
     {
         try
         {
-            var data = await _repository.GetAllAsync(idUser, cancellationToken);
+            var user = new CoreUser
+            {
+                User_Id = coreUserRequest.User_Id,
+                SqlToken = coreUserRequest.SqlToken
+            };
+
+            var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);
+
+            if (coreUser == null)
+                return new ApiResponse<IEnumerable<CoreData>>
+                {
+                    IsSuccess = false,
+                    StatusCode = 401,
+                    Message = "Debes Iniciar Sesion."
+                };
+
+            var data = await _repository.GetAllAsync(user, cancellationToken);
             return new ApiResponse<IEnumerable<CoreData>>
             {
                 IsSuccess = true,
@@ -90,7 +109,13 @@ public class CoreService : ICoreService
     {
         try
         {
-            await _repository.DeleteAsync(coreDataDelete, cancellationToken);
+            var coreData = new CoreData
+            {
+                Data_Id = coreDataDelete.Data_Id,
+                User_Id = coreDataDelete.CoreUser.User_Id,
+            };
+
+            await _repository.DeleteAsync(coreData, cancellationToken);
             return new ApiResponse<object>
             {
                 IsSuccess = true,

@@ -18,14 +18,14 @@ public class CoreUserService : ICoreUserService
         _passwordUtil = passwordUtil;
     }
 
-    public async Task<ApiResponse<CoreUserIV>> RegisterCoreUserPasswordAsync(CoreUserRequest coreUserRequest, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreUserIV>> RegisterCoreUserPasswordAsync(CoreDataPassword coreUserRequest, CancellationToken cancellationToken)
     {
         try
         {
             var user = new CoreUser
             {
-                IdUser = coreUserRequest.IdUser,
-                SqlToken = coreUserRequest.SqlToken
+                User_Id = coreUserRequest.CoreUser.IdUser,
+                SqlToken = coreUserRequest.CoreUser.SqlToken
             };
 
             var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);
@@ -76,14 +76,14 @@ public class CoreUserService : ICoreUserService
         }
     }
 
-    public async Task<ApiResponse<CoreUserIV>> GetCoreUserIVAsync(CoreUserRequest coreUserRequest, CancellationToken cancellationToken)
+    public async Task<ApiResponse<CoreUserIV>> GetCoreUserIVAsync(CoreDataPassword coreUserRequest, CancellationToken cancellationToken)
     {
         try
         {
             var user = new CoreUser
             {
-                IdUser = coreUserRequest.IdUser,
-                SqlToken = coreUserRequest.SqlToken
+                IdUser = coreUserRequest.CoreUser.IdUser,
+                SqlToken = coreUserRequest.CoreUser.SqlToken
             };
 
             var coreUser = await _coreUserRepository.GetCoreUserAsync(user, cancellationToken);

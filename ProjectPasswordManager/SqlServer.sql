@@ -3,13 +3,13 @@
 -- Tables -------------------------------------------------------
 -- --------------------------------------------------------------
 
-CREATE TABLE PM_Core (
-	Id INT PRIMARY KEY IDENTITY(1,1),
+CREATE TABLE PM_CoreData (
+	Data_Id INT PRIMARY KEY IDENTITY(1,1),
 	Data01 VARCHAR(256) NOT NULL,
 	Data02 VARCHAR(256) NOT NULL,
 	Data03 VARCHAR(256) NOT NULL,
-	IdUser UNIQUEIDENTIFIER NOT NULL
-	FOREIGN KEY (IdUser) REFERENCES Auth_Users(Id)
+	User_Id UNIQUEIDENTIFIER NOT NULL
+	FOREIGN KEY (User_Id) REFERENCES Auth_Users(User_Id)
 )
 GO
 
@@ -22,10 +22,10 @@ GO
 -- Query --------------------------------------------------------
 -- --------------------------------------------------------------
 
-UPDATE Auth_Users SET HashPM = NULL, SaltPM = NULL WHERE Id = 'cddf8d84-37d4-4c53-be39-53c95cb10a65'
+UPDATE Auth_Users SET HashPM = NULL, SaltPM = NULL WHERE User_Id = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
 
 SELECT
-	a.Id,
+	a.User_Id,
 	a.Email,
 	a.HashLogin,
 	a.SaltLogin,
@@ -34,11 +34,11 @@ SELECT
 	a.SqlToken,
 	b.Name AS Role
 FROM Auth_Users a
-	INNER JOIN Auth_Profiles b ON a.IdProfile = b.Id
+	INNER JOIN Auth_Profiles b ON a.Profile_Id = b.Profile_Id
 
-SELECT Id, Data01, Data02, Data03, IdUser 
+SELECT Data_Id, Data01, Data02, Data03, User_Id 
 FROM PM_Core 
-WHERE IdUser = 'cddf8d84-37d4-4c53-be39-53c95cb10a65'
+WHERE User_Id = '3fa85f64-5717-4562-b3fc-2c963f66afa6'
 
 -- --------------------------------------------------------------
 -- --------------------------------------------------------------

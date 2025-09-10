@@ -1,27 +1,26 @@
 ﻿using Core.Data;
 using Dapper;
-using ProjectPasswordManager.Application.DTOs;
 using ProjectPasswordManager.Domain.Entities;
 using ProjectPasswordManager.Domain.Interfaces;
 
 namespace ProjectPasswordManager.Infrastructure.Repositories;
 
-public class CoreRepository : ICoreRepository
+public class CoreDataRepository : ICoreDataRepository
 {
     private readonly IDapperContext _dapper;
 
-    public CoreRepository(IDapperContext dapper)
+    public CoreDataRepository(IDapperContext dapper)
     {
         _dapper = dapper;
     }
 
-    public async Task<IEnumerable<CoreData>> GetAllAsync(Guid idUser, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CoreData>> GetAllAsync(CoreData coreData, CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "SELECT Id, Data01, Data02, Data03, IdUser FROM PM_Core WHERE IdUser = @IdUser",
-            parameters: new { 
-                IdUser = idUser
+            commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_Core WHERE User_Id = @User_Id",
+            parameters: new {
+                coreData.User_Id
             }
         );
 
@@ -33,19 +32,19 @@ public class CoreRepository : ICoreRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "INSERT INTO PM_Core (Data01, Data02, Data03, IdUser) OUTPUT inserted.Id VALUES (@Data01, @Data02, @Data03, @IdUser)",
+            commandText: "INSERT INTO PM_Core (Data01, Data02, Data03, User_Id) OUTPUT inserted.Id VALUES (@Data01, @Data02, @Data03, @User_Id)",
             parameters: new { 
                 coreData.Data01, 
                 coreData.Data02, 
                 coreData.Data03, 
-                coreData.IdUser
+                coreData.User_Id
             }
         );
 
         using var connection = _dapper.CreateConnection();
         var id = await connection.QueryAsync<int>(commandDefinition);
 
-        coreData.Id = id.First();
+        coreData.Data_Id = id.First();
         return coreData;
     }
 
@@ -53,14 +52,14 @@ public class CoreRepository : ICoreRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "UPDATE PM_Core SET Data01 = @Data01, Data02 = @Data02, Data03 = @Data03 WHERE Id = @Id AND IdUser = @IdUser",
+            commandText: "UPDATE PM_Core SET Data01 = @Data01, Data02 = @Data02, Data03 = @Data03 WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
             parameters: new
             {
-                coreData.Id,
+                coreData.Data_Id,
                 coreData.Data01,
                 coreData.Data02,
                 coreData.Data03,
-                coreData.IdUser
+                coreData.User_Id
             }
         );
 
@@ -70,15 +69,15 @@ public class CoreRepository : ICoreRepository
         return coreData;
     }
 
-    public async Task DeleteAsync(CoreDataDelete coreDataDelete, CancellationToken cancellationToken)
+    public async Task DeleteAsync(CoreData coreData, CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "DELETE FROM PM_Core WHERE Id = @Id AND IdUser = @IdUser",
+            commandText: "DELETE FROM PM_Core WHERE Data_Id = @Data_Id AND User_Id = @User_Id",
             parameters: new
             {
-                Id = coreDataDelete.IdData,
-                coreDataDelete.IdUser
+                coreData.Data_Id,
+                coreData.User_Id
             }
         );
 

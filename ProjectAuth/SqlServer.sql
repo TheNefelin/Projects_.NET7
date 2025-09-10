@@ -22,30 +22,30 @@ EXEC sp_addrolemember 'db_owner', 'testing';
 -- --------------------------------------------------------------
 
 CREATE TABLE Mae_Config (
-	Id INT PRIMARY KEY IDENTITY(1,1),
+	Config_Id INT PRIMARY KEY IDENTITY(1,1),
 	ApiKey VARCHAR(256),
 	IsEnableRegister BIT NOT NULL,
 ) 
 GO
 
 CREATE TABLE Auth_Profiles (
-	Id INT PRIMARY KEY IDENTITY(1,1),
+	Profile_Id INT PRIMARY KEY IDENTITY(1,1),
 	Name VARCHAR(50) NOT NULL,
 	UNIQUE(Name),
 ) 
 GO
 
 CREATE TABLE Auth_Users (
-	Id UNIQUEIDENTIFIER PRIMARY KEY,
+	User_Id UNIQUEIDENTIFIER PRIMARY KEY,
 	Email VARCHAR(100) NOT NULL,
 	HashLogin VARCHAR(256) NOT NULL,
 	SaltLogin VARCHAR(256) NOT NULL,
 	HashPM VARCHAR(256),
 	SaltPM VARCHAR(256),
 	SqlToken UNIQUEIDENTIFIER,
-	IdProfile INT NOT NULL
+	Profile_Id INT NOT NULL
 	UNIQUE(Email),
-	FOREIGN KEY (IdProfile) REFERENCES Auth_Profiles(Id)
+	FOREIGN KEY (Profile_Id) REFERENCES Auth_Profiles(User_Id)
 ) 
 GO
 
@@ -62,7 +62,7 @@ GO
 SET IDENTITY_INSERT Auth_Profiles ON
 GO
 INSERT INTO Auth_Profiles
-	(Id, Name)
+	(Profile_Id, Name)
 VALUES
 	(1, 'ADMIN'),
 	(2, 'USER')

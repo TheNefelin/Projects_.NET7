@@ -20,9 +20,9 @@ builder.Services.AddTransient<IDapperContext>(provider =>
 // ======================================================================
 // Core Repository and Services
 // ======================================================================
-builder.Services.AddTransient<ICoreRepository, CoreRepository>();
+builder.Services.AddTransient<ICoreDataRepository, CoreDataRepository>();
 builder.Services.AddTransient<ICoreUserRepository, CoreUserRepository>();
-builder.Services.AddTransient<ICoreService, CoreService>();
+builder.Services.AddTransient<ICoreDataService, CoreDataService>();
 builder.Services.AddTransient<ICoreUserService, CoreUserService>();
 builder.Services.AddSingleton<PasswordUtil>();
 

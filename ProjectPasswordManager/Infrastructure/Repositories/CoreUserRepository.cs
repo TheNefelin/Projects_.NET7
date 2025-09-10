@@ -18,10 +18,10 @@ public class CoreUserRepository : ICoreUserRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: "SELECT Id AS IdUser, HashPM, SaltPM, SqlToken FROM Auth_Users WHERE Id = @IdUser AND SqlToken = @SqlToken",
+            commandText: "SELECT User_Id, HashPM, SaltPM, SqlToken FROM Auth_Users WHERE User_Id = @User_Id AND SqlToken = @SqlToken",
             parameters: new
             {
-                Id = coreUser.IdUser,
+                coreUser.User_Id,
                 coreUser.SqlToken
             }
         );
@@ -34,10 +34,10 @@ public class CoreUserRepository : ICoreUserRepository
     {
         var commandDefinition = new CommandDefinition(
             cancellationToken: cancellationToken,
-            commandText: $"UPDATE Auth_Users SET HashPM = @HashPM, SaltPM = @SaltPM WHERE Id = @IdUser AND SqlToken = @SqlToken",
+            commandText: $"UPDATE Auth_Users SET HashPM = @HashPM, SaltPM = @SaltPM WHERE User_Id = @User_Id AND SqlToken = @SqlToken",
             parameters: new 
             {
-                Id = coreUser.IdUser,
+                coreUser.User_Id,
                 coreUser.SqlToken,
                 coreUser.HashPM, 
                 coreUser.SaltPM

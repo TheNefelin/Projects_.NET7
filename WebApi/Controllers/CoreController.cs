@@ -10,34 +10,34 @@ namespace WebApi.Controllers;
 [ApiController]
 public class CoreController : ControllerBase
 {
-    private readonly ICoreService _coreService;
+    private readonly ICoreDataService _coreService;
     private readonly ICoreUserService _coreUserService;
 
-    public CoreController(ICoreService coreService, ICoreUserService coreUserService)
+    public CoreController(ICoreDataService coreService, ICoreUserService coreUserService)
     {
         _coreService = coreService;
         _coreUserService = coreUserService;
     }
 
     [HttpPost("register-password")]
-    public async Task<ActionResult<ApiResponse<CoreUserIV>>> RegisterCoreUserPassword(CoreUserRequest coreUserRequest, CancellationToken cancelationToken)
+    public async Task<ActionResult<ApiResponse<CoreUserIV>>> RegisterCoreUserPassword(CoreDataPassword coreUserRequest, CancellationToken cancelationToken)
     {
         var apiResult = await _coreUserService.RegisterCoreUserPasswordAsync(coreUserRequest, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
     [HttpPost("get-iv")]
-    public async Task<ActionResult<ApiResponse<CoreUserIV>>> GetCoreUserIV(CoreUserRequest coreUserRequest, CancellationToken cancelationToken)
+    public async Task<ActionResult<ApiResponse<CoreUserIV>>> GetCoreUserIV(CoreDataPassword coreUserRequest, CancellationToken cancelationToken)
     {
         var apiResult = await _coreUserService.GetCoreUserIVAsync(coreUserRequest, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
-    [HttpGet("{IdUser}")]
-    public async Task<ActionResult<ApiResponse<IEnumerable<CoreData>>>> GetAllCore(Guid IdUser, CancellationToken cancelationToken)
+    [HttpGet]
+    public async Task<ActionResult<ApiResponse<IEnumerable<CoreData>>>> GetAllCore([FromQuery] CoreUserRequest coreUser, CancellationToken cancelationToken)
     {
         //Id_User = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-        var apiResult = await _coreService.GetAllAsync(IdUser, cancelationToken);
+        var apiResult = await _coreService.GetAllAsync(coreUser, cancelationToken);
         return StatusCode(apiResult.StatusCode, apiResult);
     }
 
