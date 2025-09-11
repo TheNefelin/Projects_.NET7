@@ -14,7 +14,7 @@ var commandDefinition = new CommandDefinition(
     commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_CoreData WHERE User_Id = @User_Id",
     parameters: new
     {
-        User_Id = "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+        User_Id = ""
     }
 );
 
