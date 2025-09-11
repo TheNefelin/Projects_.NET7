@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 
-namespace ProjectPasswordManager.Infrastructure.Services;
+namespace Utils;
 
 public class PasswordUtil
 {

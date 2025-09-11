@@ -13,6 +13,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectPasswordManager", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectAuth", "ProjectAuth\ProjectAuth.csproj", "{005D3D20-78B5-4BD4-BA63-AA4EC616C644}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utils", "Utils\Utils.csproj", "{05A70A93-3CA0-4F82-B0A1-3E1F0AA7BEF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppTest", "ConsoleAppTest\ConsoleAppTest.csproj", "{606FC934-1E3B-4A6A-96B8-436132BF05CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{005D3D20-78B5-4BD4-BA63-AA4EC616C644}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{005D3D20-78B5-4BD4-BA63-AA4EC616C644}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{005D3D20-78B5-4BD4-BA63-AA4EC616C644}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05A70A93-3CA0-4F82-B0A1-3E1F0AA7BEF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05A70A93-3CA0-4F82-B0A1-3E1F0AA7BEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05A70A93-3CA0-4F82-B0A1-3E1F0AA7BEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05A70A93-3CA0-4F82-B0A1-3E1F0AA7BEF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606FC934-1E3B-4A6A-96B8-436132BF05CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606FC934-1E3B-4A6A-96B8-436132BF05CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606FC934-1E3B-4A6A-96B8-436132BF05CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606FC934-1E3B-4A6A-96B8-436132BF05CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

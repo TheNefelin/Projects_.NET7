@@ -8,7 +8,7 @@ using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Application.Services;
 using ProjectPasswordManager.Domain.Interfaces;
 using ProjectPasswordManager.Infrastructure.Repositories;
-using ProjectPasswordManager.Infrastructure.Services;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 

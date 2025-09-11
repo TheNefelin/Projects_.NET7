@@ -3,7 +3,7 @@ using ProjectPasswordManager.Application.DTOs;
 using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Domain.Entities;
 using ProjectPasswordManager.Domain.Interfaces;
-using ProjectPasswordManager.Infrastructure.Services;
+using Utils;
 
 namespace ProjectPasswordManager.Application.Services;
 
