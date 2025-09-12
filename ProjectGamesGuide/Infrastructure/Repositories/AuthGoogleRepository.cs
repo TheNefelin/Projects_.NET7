@@ -19,10 +19,10 @@ public class AuthGoogleRepository : IAuthGoogleRepository
     {
         var commandDefinition = new CommandDefinition(
             commandType: CommandType.StoredProcedure,
-             commandText: "GG_Login",
-             parameters: new { login.Email, login.Sub, login.Jti },
-             transaction: default,
-             cancellationToken: cancellationToken
+            commandText: "GG_Login",
+            parameters: new { login.Email, login.Sub, login.Jti },
+            transaction: default,
+            cancellationToken: cancellationToken
          );
 
         using var connection = _dapper.CreateConnection();

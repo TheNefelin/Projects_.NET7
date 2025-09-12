@@ -73,7 +73,7 @@ GO
 -- --------------------------------------------------------------
 
 CREATE PROCEDURE Auth_Register
-	@IdUser VARCHAR(256),
+	@User_Id UNIQUEIDENTIFIER,
 	@Email VARCHAR(100),
 	@HashLogin VARCHAR(256),
 	@SaltLogin VARCHAR(256)
@@ -81,13 +81,13 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	IF 0 = (SELECT ISNULL(IsEnableRegister, 0) FROM Mae_Config WHERE Id = 1)
+	IF 0 = (SELECT ISNULL(IsEnableRegister, 0) FROM Mae_Config WHERE Config_Id = 1)
 		BEGIN
 			SELECT 0 AS IsSucces, 401 AS StatusCode, 'El Servicio No Esta Disponible' AS Msge
 			RETURN
 		END
 
-	IF EXISTS (SELECT Id FROM Auth_Users WHERE Email = @Email)
+	IF EXISTS (SELECT User_Id FROM Auth_Users WHERE Email = @Email)
 		BEGIN
 			SELECT 0 AS IsSucces, 400 AS StatusCode, 'El Usuario ya Existe' AS Msge
 			RETURN
@@ -95,9 +95,9 @@ BEGIN
 
 	BEGIN TRY
 		INSERT INTO Auth_Users
-			(Id, Email, HashLogin, SaltLogin, Id_Profile)
+			(User_Id, Email, HashLogin, SaltLogin, Profile_Id)
 		VALUES
-			(@IdUser, @Email, @HashLogin, @SaltLogin, 2)
+			(@User_Id, @Email, @HashLogin, @SaltLogin, 2)
 
 		SELECT 1 AS IsSucces, 201 AS StatusCode, 'Usuario Registrado Correctamente' AS Msge
     END TRY
@@ -119,17 +119,17 @@ BEGIN
 		Email = @Email 
 
 	SELECT 
-		a.Id AS IdUser,
+		a.User_Id,
 		a.Email,
 		a.HashLogin,
 		a.SaltLogin,
 		a.HashPM,
 		a.SaltPM,
 		a.SqlToken,
-		--a.IdPerfil,
+		--a.Profile_Id,
 		b.Name AS Role
 	FROM Auth_Users a 
-		INNER JOIN Auth_Profiles b ON a.IdProfile = b.Id
+		INNER JOIN Auth_Profiles b ON a.Profile_Id = b.Profile_Id
 	WHERE 
 		a.Email = @Email 
 END

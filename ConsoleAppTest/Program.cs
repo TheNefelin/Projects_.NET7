@@ -11,10 +11,10 @@ var dapper = new DapperContext(cnn);
 var encryption = new EncryptionUtil();
 
 var commandDefinition = new CommandDefinition(
-    commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_CoreData WHERE User_Id = @User_Id",
+    commandText: "SELECT Data_Id, Data01, Data02, Data03, User_Id FROM PM_CoreData WHERE User_Id = @User_Id ORDER BY Data01",
     parameters: new
     {
-        User_Id = ""
+        User_Id = "3FA85F64-5717-4562-B3FC-2C963F66AFA6"
     }
 );
 
