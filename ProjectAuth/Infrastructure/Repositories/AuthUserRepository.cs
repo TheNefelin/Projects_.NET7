@@ -1,34 +1,29 @@
-﻿using Core.Data;
+﻿using Core;
+using Core.Data;
 using Dapper;
-using Microsoft.Win32;
 using ProjectAuth.Domain.Entities;
-using ProjectAuth.Infrastructure.Services;
+using ProjectAuth.Domain.Interfaces;
 using System.Data;
-using System.Threading;
 
 namespace ProjectAuth.Infrastructure.Repositories;
 
-public class AuthUserRepository
+public class AuthUserRepository : IAuthUserRepository
 {
     private readonly IDapperContext _dapper;
-    private readonly PasswordUtil _passwordUtil;
-    private readonly JwtTokenUtil _jwtUtil;
 
-    public AuthUserRepository(IDapperContext dapper, PasswordUtil passwordUtil, JwtTokenUtil jwtUtil)
+    public AuthUserRepository(IDapperContext dapper)
     {
         _dapper = dapper;
-        _passwordUtil = passwordUtil;
-        _jwtUtil = jwtUtil;
     }
 
-    public async Task<int> CreateUserAsync(AuthUser authUser, CancellationToken cancellationToken)
+    public async Task<SqlResponse?> CreateUserAsync(AuthUser authUser, CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
             commandType: CommandType.StoredProcedure,
             commandText: "Auth_Register",
             parameters: new
             {
-                authUser.IdUser,
+                authUser.User_Id,
                 authUser.Email,
                 HashLogin = authUser.HashPM,
                 SaltLogin = authUser.SaltPM
@@ -38,6 +33,22 @@ public class AuthUserRepository
         );
 
         using var connection = _dapper.CreateConnection();
-        return await connection.QueryAsync<int>(commandDefinition);
+        return await connection.QueryFirstOrDefaultAsync<SqlResponse>(commandDefinition);
+    }
+
+    public async Task<AuthUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
+    {
+        var commandDefinition = new CommandDefinition(
+            commandType: CommandType.StoredProcedure,
+            commandText: "Auth_Login",
+            parameters: new 
+            { 
+                Email = email 
+            },
+            transaction: default,
+            cancellationToken: cancellationToken
+        );
+        using var connection = _dapper.CreateConnection();
+        return await connection.QueryFirstOrDefaultAsync<AuthUser>(commandDefinition);
     }
 }

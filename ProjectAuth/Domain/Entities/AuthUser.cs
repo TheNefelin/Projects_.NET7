@@ -2,12 +2,12 @@
 
 public class AuthUser
 {
-    public string IdUser { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string HashLogin { get; set; } = string.Empty;
-    public string SaltLogin { get; set; } = string.Empty;
-    public string HashPM { get; set; } = string.Empty;
-    public string SaltPM { get; set; } = string.Empty;
-    public string SqlToken { get; set; } = string.Empty;
-    public string Role { get; set; } = string.Empty;
+    public Guid User_Id { get; set; }
+    public required string Email { get; set; }
+    public required string HashLogin { get; set; }
+    public required string SaltLogin { get; set; }
+    public string? HashPM { get; set; }
+    public string? SaltPM { get; set; }
+    public string? SqlToken { get; set; }
+    public string? Role { get; set; }
 }

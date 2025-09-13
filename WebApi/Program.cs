@@ -1,4 +1,8 @@
 using Core.Data;
+using ProjectAuth.Application.Interfaces;
+using ProjectAuth.Application.Services;
+using ProjectAuth.Domain.Interfaces;
+using ProjectAuth.Infrastructure.Repositories;
 using ProjectGamesGuide.Application.Interfaces;
 using ProjectGamesGuide.Application.Services;
 using ProjectGamesGuide.Domain.Entities;
@@ -25,6 +29,12 @@ builder.Services.AddTransient<ICoreUserRepository, CoreUserRepository>();
 builder.Services.AddTransient<ICoreDataService, CoreDataService>();
 builder.Services.AddTransient<ICoreUserService, CoreUserService>();
 builder.Services.AddSingleton<PasswordUtil>();
+
+// ======================================================================
+// Auth Repository and Services
+// ======================================================================
+builder.Services.AddTransient<IAuthUserRepository, AuthUserRepository>();
+builder.Services.AddTransient<IAuthUserService, AuthUserService>();
 
 // ======================================================================
 // Game Guides Repository and Services
