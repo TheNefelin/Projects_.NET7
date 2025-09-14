@@ -14,7 +14,7 @@ public class JwtTokenUtil
         var claims = new[]
         {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Sub, jwtUser.IdUser),
+                new Claim(JwtRegisteredClaimNames.Sub, jwtUser.User_Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, jwtUser.Email),
                 new Claim(ClaimTypes.Role, jwtUser.Role)
             };

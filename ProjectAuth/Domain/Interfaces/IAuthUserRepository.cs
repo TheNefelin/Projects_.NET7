@@ -7,4 +7,5 @@ public interface IAuthUserRepository
 {
     Task<SqlResponse?> CreateUserAsync(AuthUser authUser, CancellationToken cancellationToken);
     Task<AuthUser?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+    Task<Guid> NewSqlToken(string email, CancellationToken cancellationToken);
 }

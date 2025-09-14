@@ -3,6 +3,7 @@ using ProjectAuth.Application.Interfaces;
 using ProjectAuth.Application.Services;
 using ProjectAuth.Domain.Interfaces;
 using ProjectAuth.Infrastructure.Repositories;
+using ProjectAuth.Infrastructure.Services;
 using ProjectGamesGuide.Application.Interfaces;
 using ProjectGamesGuide.Application.Services;
 using ProjectGamesGuide.Domain.Entities;
@@ -22,12 +23,9 @@ builder.Services.AddTransient<IDapperContext>(provider =>
 });
 
 // ======================================================================
-// Core Repository and Services
+// Utils Services
 // ======================================================================
-builder.Services.AddTransient<ICoreDataRepository, CoreDataRepository>();
-builder.Services.AddTransient<ICoreUserRepository, CoreUserRepository>();
-builder.Services.AddTransient<ICoreDataService, CoreDataService>();
-builder.Services.AddTransient<ICoreUserService, CoreUserService>();
+builder.Services.AddSingleton<EncryptionUtil>();
 builder.Services.AddSingleton<PasswordUtil>();
 
 // ======================================================================
@@ -35,6 +33,15 @@ builder.Services.AddSingleton<PasswordUtil>();
 // ======================================================================
 builder.Services.AddTransient<IAuthUserRepository, AuthUserRepository>();
 builder.Services.AddTransient<IAuthUserService, AuthUserService>();
+builder.Services.AddSingleton<JwtTokenUtil>();
+
+// ======================================================================
+// Password Manager Repository and Services
+// ======================================================================
+builder.Services.AddTransient<ICoreDataRepository, CoreDataRepository>();
+builder.Services.AddTransient<ICoreUserRepository, CoreUserRepository>();
+builder.Services.AddTransient<ICoreDataService, CoreDataService>();
+builder.Services.AddTransient<ICoreUserService, CoreUserService>();
 
 // ======================================================================
 // Game Guides Repository and Services
