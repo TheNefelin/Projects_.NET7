@@ -1,14 +1,15 @@
 ﻿using Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectAuth.Application.DTOs;
 using ProjectAuth.Application.Interfaces;
 using ProjectAuth.Infrastructure.Models;
-using ProjectPasswordManager.Application.DTOs;
 
 namespace WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[AllowAnonymous]
 public class AuthController : ControllerBase
 {
     private readonly IConfiguration _configuration;

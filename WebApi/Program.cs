@@ -1,4 +1,7 @@
 using Core.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ProjectAuth.Application.Interfaces;
 using ProjectAuth.Application.Services;
 using ProjectAuth.Domain.Interfaces;
@@ -13,7 +16,9 @@ using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Application.Services;
 using ProjectPasswordManager.Domain.Interfaces;
 using ProjectPasswordManager.Infrastructure.Repositories;
+using System.Text;
 using Utils;
+using WebApi.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +26,11 @@ builder.Services.AddTransient<IDapperContext>(provider =>
 {
     return new DapperContext(builder.Configuration.GetConnectionString("SqlServerWeb")!);
 });
+
+// ======================================================================
+// Filters
+// ======================================================================
+builder.Services.AddSingleton<ApiKeyFilter>();
 
 // ======================================================================
 // Utils Services
@@ -32,7 +42,9 @@ builder.Services.AddSingleton<PasswordUtil>();
 // Auth Repository and Services
 // ======================================================================
 builder.Services.AddTransient<IAuthUserRepository, AuthUserRepository>();
+builder.Services.AddTransient<IMaeConfigRepository, MaeConfigRepository>();
 builder.Services.AddTransient<IAuthUserService, AuthUserService>();
+builder.Services.AddTransient<IMaeConfigService, MaeConfigService>();
 builder.Services.AddSingleton<JwtTokenUtil>();
 
 // ======================================================================
@@ -70,7 +82,34 @@ builder.Services.AddTransient<IServiceBase<Adventure>, AdventureService>();
 builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>();
 
 // ======================================================================
+// JWT Authentication Configuration
+// ======================================================================
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]!)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
+builder.Services.AddAuthorization();
+
+// ======================================================================
+// Add CORS Policy
+// ======================================================================
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "_allowedOrigins",
@@ -89,10 +128,37 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// ======================================================================
+// Swagger Configuration with JWT
+// ======================================================================
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Projects API",
+        Version = "v1",
+        Description = "API with JWT Authentication"
+    });
+    // Configuración para JWT en Swagger
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+    // Filtro personalizado para aplicar seguridad solo a endpoints con [Authorize]
+    c.OperationFilter<AuthorizeOperationFilter>();
+});
 
 var app = builder.Build();
 
+// ======================================================================
+// Add Swagger UI
+// ======================================================================
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -108,6 +174,17 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ======================================================================
+// Cors Middleware
+// ======================================================================
+app.UseCors("_allowedOrigins");
+
+// ======================================================================
+// Authentication and Authorization Middleware
+// ======================================================================
+app.UseAuthentication();
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
