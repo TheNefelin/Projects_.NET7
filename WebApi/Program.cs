@@ -82,6 +82,10 @@ builder.Services.AddTransient<IServiceBase<Adventure>, AdventureService>();
 builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>();
 
 // ======================================================================
+// Porfolio Repository and Services
+// ======================================================================
+
+// ======================================================================
 // JWT Authentication Configuration
 // ======================================================================
 builder.Services
