@@ -8,7 +8,7 @@ using WebApi.Filters;
 
 namespace WebApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/core")]
 [ApiController]
 [ServiceFilter(typeof(ApiKeyFilter))]
 [Authorize]

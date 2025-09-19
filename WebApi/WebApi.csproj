@@ -16,6 +16,7 @@
     <ProjectReference Include="..\ProjectAuth\ProjectAuth.csproj" />
     <ProjectReference Include="..\ProjectGamesGuide\ProjectGamesGuide.csproj" />
     <ProjectReference Include="..\ProjectPasswordManager\ProjectPasswordManager.csproj" />
+    <ProjectReference Include="..\ProjectPortfolio\ProjectPortfolio.csproj" />
   </ItemGroup>
 
   <ItemGroup>

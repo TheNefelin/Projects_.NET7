@@ -16,6 +16,11 @@ using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Application.Services;
 using ProjectPasswordManager.Domain.Interfaces;
 using ProjectPasswordManager.Infrastructure.Repositories;
+using ProjectPortfolio.Application.Interfaces;
+using ProjectPortfolio.Application.Services;
+using ProjectPortfolio.Domain.Entities;
+using ProjectPortfolio.Domain.Interfaces;
+using ProjectPortfolio.Infrastructure.Repositories;
 using System.Text;
 using Utils;
 using WebApi.Filters;
@@ -84,6 +89,9 @@ builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>()
 // ======================================================================
 // Porfolio Repository and Services
 // ======================================================================
+builder.Services.AddTransient<IRepositoryPortfolioBase<Language>, LanguageRepository>();
+
+builder.Services.AddTransient<IServicePortfolioBase<Language>, LanguageService>();
 
 // ======================================================================
 // JWT Authentication Configuration

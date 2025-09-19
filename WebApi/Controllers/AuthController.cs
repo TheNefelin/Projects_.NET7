@@ -7,7 +7,7 @@ using ProjectAuth.Infrastructure.Models;
 
 namespace WebApi.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/auth")]
 [ApiController]
 [AllowAnonymous]
 public class AuthController : ControllerBase
