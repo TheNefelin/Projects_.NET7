@@ -54,7 +54,7 @@ GO
 CREATE TABLE PF_Url (
 	Id INT PRIMARY KEY IDENTITY(1,1),
 	Name VARCHAR(50) NOT NULL,
-	Url VARCHAR(256) NOT NULL,
+	Link VARCHAR(256) NOT NULL,
 	IsEnable BIT NOT NULL,
 	Id_UrlGrp INT NOT NULL,
 	UNIQUE (Name),
@@ -226,7 +226,7 @@ GO
 SET IDENTITY_INSERT PF_Url ON
 GO
 INSERT INTO PF_Url
-	(Id, Name, Url, IsEnable, Id_UrlGrp)
+	(Id, Name, Link, IsEnable, Id_UrlGrp)
 VALUES
 	(1,'DaisyUI','https://daisyui.com',1,1),
 	(2,'FastAPI','https://fastapi.tiangolo.com',1,1),

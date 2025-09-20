@@ -16,6 +16,7 @@ using ProjectPasswordManager.Application.Interfaces;
 using ProjectPasswordManager.Application.Services;
 using ProjectPasswordManager.Domain.Interfaces;
 using ProjectPasswordManager.Infrastructure.Repositories;
+using ProjectPortfolio.Application.DTOs;
 using ProjectPortfolio.Application.Interfaces;
 using ProjectPortfolio.Application.Services;
 using ProjectPortfolio.Domain.Entities;
@@ -89,9 +90,22 @@ builder.Services.AddTransient<IServiceBase<AdventureImg>, AdventureImgService>()
 // ======================================================================
 // Porfolio Repository and Services
 // ======================================================================
+builder.Services.AddTransient<IRepositoryPortfolioBase<Project>, ProjectRepository>();
 builder.Services.AddTransient<IRepositoryPortfolioBase<Language>, LanguageRepository>();
+builder.Services.AddTransient<IRepositoryPortfolioBase<Technology>, TechnologyRepository>();
+builder.Services.AddTransient<IRepositoryPortfolioBase<Pro_Lang>, Pro_Lang_Repository>();
+builder.Services.AddTransient<IRepositoryPortfolioBase<Pro_Tech>, Pro_Tech_Repository>();
+builder.Services.AddTransient<IRepositoryPortfolioBase<UrlGrp>, UrlGrpRepository>();
+builder.Services.AddTransient<IRepositoryPortfolioBase<Url>, UrlRepository>();
 
+builder.Services.AddTransient<IServicePortfolioBase<Project>, ProjectService>();
 builder.Services.AddTransient<IServicePortfolioBase<Language>, LanguageService>();
+builder.Services.AddTransient<IServicePortfolioBase<Technology>, TechnologyService>();
+builder.Services.AddTransient<IServicePortfolioBase<UrlGrp>, UrlGrpService>();
+builder.Services.AddTransient<IServicePortfolioBase<Url>, UrlService>();
+
+builder.Services.AddTransient<IServicePortfolioBase<ProjectResponse>, PublicProjectsService>();
+builder.Services.AddTransient<IServicePortfolioBase<UrlResponse>, PublicUrlsService>();
 
 // ======================================================================
 // JWT Authentication Configuration

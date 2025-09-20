@@ -17,7 +17,7 @@ public class LanguageRepository : IRepositoryPortfolioBase<Language>
     public async Task<IEnumerable<Language>> GetAllAsync(CancellationToken cancellationToken)
     {
         var commandDefinition = new CommandDefinition(
-            commandText: "SELECT a.Id, a.Name, a.ImgUrl, b.Id_Project FROM PF_Languages a INNER JOIN PF_Pro_Lang b ON a.Id = b.Id_Language",
+            commandText: "SELECT Id, Name, ImgUrl FROM PF_Languages",
             cancellationToken: cancellationToken
         );
 
